@@ -3,8 +3,16 @@ import { GoogleGenAI } from '@google/genai';
 import dotenv from 'dotenv';
 dotenv.config();
 
-const supabaseUrl = process.env.SUPABASE_URL || 'https://placeholder.supabase.co';
-const supabaseKey = process.env.SUPABASE_KEY || 'placeholder';
+let supabaseUrl = process.env.SUPABASE_URL || 'https://placeholder.supabase.co';
+let supabaseKey = process.env.SUPABASE_KEY || 'placeholder';
+
+// Sanitize user inputs to prevent crashes
+supabaseUrl = supabaseUrl.trim().replace(/^["']|["']$/g, '');
+supabaseKey = supabaseKey.trim().replace(/^["']|["']$/g, '');
+if (!supabaseUrl.startsWith('http://') && !supabaseUrl.startsWith('https://')) {
+    supabaseUrl = 'https://' + supabaseUrl;
+}
+
 export const supabase = createClient(supabaseUrl, supabaseKey);
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
