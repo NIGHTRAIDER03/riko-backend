@@ -3,7 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { GoogleGenAI } from '@google/genai';
 import { extractMemories } from './memoryExtractor.js';
-import { searchMemories, saveMemory } from './database.js';
+import { supabase, searchMemories, saveMemory } from './database.js';
 import { runCuriosityLoop } from './idleMode.js';
 
 dotenv.config();
@@ -42,7 +42,7 @@ app.post('/api/chat', async (req, res) => {
 
     // Step 3: Call AI
     const response = await ai.models.generateContent({
-        model: 'gemini-2.0-flash',
+        model: 'gemini-1.5-pro',
         contents: message,
         config: { systemInstruction: fullSystemPrompt }
     });
@@ -60,9 +60,32 @@ app.post('/api/chat', async (req, res) => {
     res.json({ reply });
   } catch (error) {
     console.error('Error in chat:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: 'Internal server error', details: error.message });
   }
 });
+
+app.post('/api/test-gemini', async (req, res) => {
+  try {
+    const response = await ai.models.generateContent({
+        model: 'gemini-2.0-flash',
+        contents: req.body.message || "hello"
+    });
+    res.json({ reply: response.text });
+  } catch (error) {
+    res.status(500).json({ error: 'Gemini Error', details: error.message });
+  }
+});
+
+app.post('/api/test-supabase', async (req, res) => {
+  try {
+    const { data, error } = await supabase.from('memories').select('*').limit(1);
+    if (error) throw error;
+    res.json({ reply: 'Supabase OK', data });
+  } catch (error) {
+    res.status(500).json({ error: 'Supabase Error', details: error.message });
+  }
+});
+
 
 // Manual trigger for testing Idle Mode
 app.post('/api/idle-learn', async (req, res) => {

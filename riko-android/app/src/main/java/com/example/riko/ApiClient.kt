@@ -8,7 +8,7 @@ import android.util.Log
 
 object ApiClient {
     // Note: Replace this with your actual Render.com URL later
-    private const val BACKEND_URL = "https://your-riko-backend.onrender.com/api/chat"
+    private const val BACKEND_URL = "https://riko-backend-sw8k.onrender.com/api/chat"
 
     fun sendMessage(message: String, callback: (String) -> Unit) {
         Thread {
