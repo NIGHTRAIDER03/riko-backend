@@ -8,7 +8,11 @@ let supabaseKey = process.env.SUPABASE_KEY || 'placeholder';
 
 // Sanitize user inputs to prevent crashes
 supabaseUrl = supabaseUrl.trim().replace(/^["']|["']$/g, '');
+supabaseUrl = supabaseUrl.replace(/^url:\s*/i, ''); // Strip accidental "url:" prefix
+supabaseUrl = supabaseUrl.replace(/\/rest\/v1\/?$/i, ''); // Strip accidental /rest/v1/ suffix
 supabaseKey = supabaseKey.trim().replace(/^["']|["']$/g, '');
+supabaseKey = supabaseKey.replace(/^key:\s*/i, ''); // Strip accidental "key:" prefix
+
 if (!supabaseUrl.startsWith('http://') && !supabaseUrl.startsWith('https://')) {
     supabaseUrl = 'https://' + supabaseUrl;
 }
