@@ -15,7 +15,7 @@ Do not output conversational text.
 export async function extractMemories(userMessage) {
     try {
         const response = await ai.models.generateContent({
-            model: 'gemini-1.5-pro-latest',
+            model: 'gemini-1.5-flash',
             contents: `User Message: "${userMessage}"`,
             config: {
                 systemInstruction: EXTRACTOR_PROMPT,
